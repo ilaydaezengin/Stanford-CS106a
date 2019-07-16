@@ -12,40 +12,31 @@ public class PrimeNumber extends ConsoleProgram {
 	public void run() {
 
 		println("The first 50 prime numbers are ");
-
-		int number = 2; 
-		int count = 0;
-		while (count < NUMBER_OF_PRIMES) {
-
-			boolean isPrime = true; 
-
+		println("2"); 
+		int isPrime = 1;
+		int number = 3;
+		for(int j = 2; j <= NUMBER_OF_PRIMES; j ++) {
 			// Test if number is prime
-			// Your code starts here
-			int n = number;
-			for (int i = 2; i <= n; i++) { 
+			for (int i = 2; i <=Math.sqrt(number); i++) { 
 				  
 		        // If n is divisible by any number between 
 		        // 2 and itself, it is not prime 
-		        if (n % i == 0) { 
-		            n++; 
-		        } 
-		        
-			// Your code ends here
-
-			// Print the prime number and increase the count
-			if (isPrime) {
-				count++; // Increase the count
-
-				if (count % 10 == 0) {
-					println(number);
-				} else {
-					print(number + " ");
-				}
-			}	
+		            if (number % i == 0) { 
+			        	isPrime = 0;
+			        	break;
+			          } 
+		         			}
+			if(isPrime != 0){
+				println(number);
+				j++; // Increase the count
+				
+			}
+			isPrime = 1;
 			number++;
+			// Your code ends here
 		}
+		}
+	
+	private static final int NUMBER_OF_PRIMES = 50;
 	}
 
-	private static final int NUMBER_OF_PRIMES = 50;
-
-}
