@@ -404,9 +404,9 @@ return 0;
     }
     private void createPrice() {
 		// Your code starts here
-    	double tree_spending =  tree_count * TREE_PRICE;
-    	double present_spending = present_count * PRESENT_PRICE;
-    	double orn_spending = sm_circ_orn_count * SMALL_CIRCLE_ORNAMENT_PRICE +
+    	double tree_spend =  tree_count * TREE_PRICE;
+    	double present_spend = present_count * PRESENT_PRICE;
+    	double orn_spend = sm_circ_orn_count * SMALL_CIRCLE_ORNAMENT_PRICE +
 				med_circ_orn_count * MEDIUM_CIRCLE_ORNAMENT_PRICE +
 				lrg_circ_orn_count * LARGE_CIRCLE_ORNAMENT_PRICE +
 				sm_oval_orn_count *  SMALL_OVAL_ORNAMENT_PRICE +
@@ -415,8 +415,11 @@ return 0;
 				sm_star_orn_count * SMALL_STAR_ORNAMENT_PRICE +
 				med_star_orn_count * MEDIUM_STAR_ORNAMENT_PRICE +
 				lrg_star_orn_count * LARGE_STAR_ORNAMENT_PRICE;
-		double price = tree_spending + present_spending + orn_spending;
-				
+		double price = tree_spend + present_spend + orn_spend;
+		tree_spending.setValue(tree_spend);
+		present_spending.setValue(present_spend);
+		orm_spending.setValue(orn_spend);
+			
 		// Your code ends here
    }
    private GPolygon createStar(int size) {  
