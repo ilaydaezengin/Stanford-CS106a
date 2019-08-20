@@ -95,15 +95,22 @@ public class Comp130_HW4_Sum19 extends GraphicsProgram{
 	int sm_star_orn_count = 0;
 	int med_star_orn_count = 0;
 	int lrg_star_orn_count = 0;
-	
+	private ArrayList<GOval> snowList = new ArrayList<GOval>();
+	double tree_spend;
+	double present_spend;
+	double orn_spend;
+	double price;
 	// Your code ends here
 	
 	public void run() {
-		init();
-		addActionListeners();
-		addMouseListeners();
+		while(true){
+		makeNewSnow();
+		moveSnow();
 		
-
+		// pause
+		pause(10);
+	}
+		
 	}
 
 	
@@ -158,6 +165,7 @@ public class Comp130_HW4_Sum19 extends GraphicsProgram{
     		
     		orm_list = new JComboBox<String>();
     		createStudentList();
+    		Collections.sort(studentList);
     		for(int i = 0; i < studentList.size(); i++){
     			orm_list.addItem(studentList.get(i));
     		}
@@ -185,6 +193,10 @@ public class Comp130_HW4_Sum19 extends GraphicsProgram{
     		add(total_spending,EAST);
     		add(calculateSpendingButton,EAST);
     		addMusicAndBackground();
+    		addActionListeners();
+    		addMouseListeners();
+    			
+    			
 		// Your code ends here
 		
     }
@@ -214,14 +226,18 @@ public class Comp130_HW4_Sum19 extends GraphicsProgram{
     		} else if(s.equals("Create Present")){
     			createPresent();
     			present_count ++;
+    		} else if(s.equals("Calculate Spending")){
+    			createPrice();
+    			tree_spending.setValue(tree_spend);
+    			present_spending.setValue(present_spend);
+    			orm_spending.setValue(orn_spend);
+    			total_spending.setValue(price);
     		} else if(s.equals("Clear")){
     			removeAll();
     			total_spending.setValue(0.0);
     			orm_spending.setValue(0.0);
     			present_spending.setValue(0.0);
     			tree_spending.setValue(0.0);
-    		} else if(s.equals("Calcuate Spending")){
-    			createPrice();
     			
     			
     			
@@ -234,6 +250,7 @@ public class Comp130_HW4_Sum19 extends GraphicsProgram{
    
     private void createOrnament(MouseEvent e) {
     		// Your code starts here
+    	if(tree_count != 0){
     		String name = (String) orm_shape.getSelectedItem();
     		if(name.equals("Circle")){
     			GOval circ = createCircleOrnament(e);
@@ -258,14 +275,29 @@ public class Comp130_HW4_Sum19 extends GraphicsProgram{
     			add(circ,e.getX(),e.getY());
     		}
     	} 
-		
+    }
     		// Your code ends here
 	
     private void createPresent() {
     		
     		// Your code starts here
-		
-    		// Your code ends here
+		String name = (String) orm_list.getSelectedItem();
+		GCompound present = new GCompound();
+		GRect rect = new GRect(PRESENT_WIDTH,PRESENT_HEIGHT);
+		present.add(rect);
+		char text1 = name.charAt(0);
+		char text2 = name.charAt(name.indexOf(" ")+1);
+		String text =""+ Character.toUpperCase(text1) + Character.toUpperCase(text2)+ "";
+		GLabel label = new GLabel(text);
+		double x =(rect.getWidth()-label.getWidth())/2;
+		double y =(rect.getHeight()+label.getAscent())/2;
+    	label.setLocation(x, y);
+    	rect.setFilled(true);
+    	rect.setColor(rgen.nextColor());
+    	present.add(label);
+    	int xcoord = rgen.nextInt(getWidth() - 2 * PRESENT_WIDTH);
+    	add(present,xcoord,PRESENT_Y_COORDINATE);
+    	// Your code ends here
 	}
    
     private Color getOrnamentColor() {
@@ -377,11 +409,11 @@ return 0;
 	   GCompound tree = new GCompound();
 	   GPolygon small_tri = new GPolygon(3*TRUNK_WIDTH,TRUNK_HEIGHT/2);
 	   small_tri.addVertex(0,-TRUNK_HEIGHT/4);
-	   small_tri.addEdge(-3*TRUNK_WIDTH/2,TRUNK_HEIGHT/4);
+	   small_tri.addEdge(-3*TRUNK_WIDTH/2,TRUNK_HEIGHT/2);
 	   small_tri.addEdge(3*TRUNK_WIDTH, 0);
 	   small_tri.setFilled(true);
 	   small_tri.setFillColor(Color.green);
-	   tree.add(small_tri,0,0);
+	   tree.add(small_tri,0,-TRUNK_HEIGHT);
 	   
 	   GPolygon big_tri =  new GPolygon(6*TRUNK_WIDTH,TRUNK_HEIGHT);
 	   big_tri.addVertex(0, -TRUNK_HEIGHT/2);
@@ -389,24 +421,25 @@ return 0;
 	   big_tri.addEdge(6*TRUNK_WIDTH, 0);
 	   big_tri.setFilled(true);
 	   big_tri.setFillColor(Color.green);
-	   tree.add(big_tri,0,TRUNK_HEIGHT/2);
+	   tree.add(big_tri,0,-TRUNK_HEIGHT/4);
 	   
 	   GRect body = new GRect(TRUNK_WIDTH,TRUNK_HEIGHT);
 	   body.setFilled(true);
-	   body.setFillColor(Color.BLACK);
-	   tree.add(body,5*TRUNK_WIDTH/2,3*TRUNK_HEIGHT/2);
+	   body.setFillColor(Color.black);
+	   tree.add(body,-TRUNK_WIDTH/2, 3*TRUNK_WIDTH/4);
+	   big_tri.sendToFront();
 	   
 	   int y = TREE_Y_COORDINATE;
-	   int x = rgen.nextInt(0,getWidth());
-		add(tree,x,y);
+	   int x = rgen.nextInt(0,getWidth()-5*TRUNK_HEIGHT/2);
+	   add(tree,x,y);
 		
     		// Your code ends here
     }
     private void createPrice() {
 		// Your code starts here
-    	double tree_spend =  tree_count * TREE_PRICE;
-    	double present_spend = present_count * PRESENT_PRICE;
-    	double orn_spend = sm_circ_orn_count * SMALL_CIRCLE_ORNAMENT_PRICE +
+    	tree_spend =  tree_count * TREE_PRICE;
+    	present_spend = present_count * PRESENT_PRICE;
+    	orn_spend = sm_circ_orn_count * SMALL_CIRCLE_ORNAMENT_PRICE +
 				med_circ_orn_count * MEDIUM_CIRCLE_ORNAMENT_PRICE +
 				lrg_circ_orn_count * LARGE_CIRCLE_ORNAMENT_PRICE +
 				sm_oval_orn_count *  SMALL_OVAL_ORNAMENT_PRICE +
@@ -415,31 +448,52 @@ return 0;
 				sm_star_orn_count * SMALL_STAR_ORNAMENT_PRICE +
 				med_star_orn_count * MEDIUM_STAR_ORNAMENT_PRICE +
 				lrg_star_orn_count * LARGE_STAR_ORNAMENT_PRICE;
-		double price = tree_spend + present_spend + orn_spend;
-		tree_spending.setValue(tree_spend);
-		present_spending.setValue(present_spend);
-		orm_spending.setValue(orn_spend);
+		price = tree_spend + present_spend + orn_spend;
+//		tree_spending.setValue(tree_spend);
+//		present_spending.setValue(present_spend);
+//		orm_spending.setValue(orn_spend);
+//		total_spending.setValue(price);
+		//println(price);
 			
 		// Your code ends here
    }
    private GPolygon createStar(int size) {  
 		// Your code starts here
 	   GPolygon star = new GPolygon();
-		star.setFilled(true);
-		star.setColor(getOrnamentColor());
-		// Your code ends here
+		double current_angle = 18;
+		double half_angle = (360/5)/2;
+		for (int i =0; i< 5; i++) {
+			double rad = Math.toRadians(current_angle);
+			star.addVertex( size*Math.cos(rad), size*Math.sin(rad));
+			current_angle -= half_angle; 
+			rad = Math.toRadians(current_angle);
+			star.addVertex( size/2*Math.cos(rad), size/2*Math.sin(rad));
+			current_angle -= half_angle; 
+		}
+		
 		return star;
    }
    private void moveSnow() {
 		// Your code starts here
-		
+	   for(GOval nextFlake : snowList) {
+			if(nextFlake.getY() + SNOW_SIZE < getHeight()) {
+				nextFlake.move(0, 1);
+			}
+		}
 		// Your code ends here
 	}
 
 	private void makeNewSnow() {
 		// make a new snowflake with 5% probability
 		// Your code starts here
-		
+		if(rgen.nextBoolean(0.05)) {
+			double x = rgen.nextInt(getWidth() - SNOW_SIZE);
+			GOval flake = new GOval(SNOW_SIZE, SNOW_SIZE);
+			flake.setFilled(true);
+			flake.setFillColor(Color.white);
+			add(flake, x, -SNOW_SIZE);
+			snowList.add(flake);
+		}
 		// Your code ends here
 
 	}
@@ -449,28 +503,28 @@ return 0;
 	 * Method to create a collection of the student names
 	 */
 	private void createStudentList() {
-		studentList.add("AHMET;GÃœVEN");
-		studentList.add("ALÄ°;GAZEL");
-	    	studentList.add("ALÄ°;DOÄ�ANGÃœN");
-	    	studentList.add("ALÄ°;AKYÃœREK");
-	    	studentList.add("ALPER;YELÄ°MLÄ°EÅ�");
-		studentList.add("ARYA;YÄ°GÄ°T");
-		studentList.add("ATA;GÃœRSOY");
-		studentList.add("AYBERK;AKÃ‡AY");
-		studentList.add("AYKUT;IÅ�IK");
-		studentList.add("BAHA;ORHAN");
-		studentList.add("BAHAR;Ã–ZTÃœRK");
-		studentList.add("BETÃœL;DÄ°NÃ‡ER");
-		studentList.add("CAN;GUDEN");
-		studentList.add("CANKUT;Ã‡OK");
-		studentList.add("DENÄ°Z;SAÄ�MANLI");
-		studentList.add("DÄ°LARA;KARADUMAN");
-		studentList.add("DOÄ�UKAN;YAPRAK");
-		studentList.add("EGE;AKÅ�EHÄ°RLÄ°OÄ�LU");
-		studentList.add("EGE;KILIÃ‡");
-		studentList.add("ENEL;COMBA");
-		studentList.add("ENES;Ã‡EVÄ°K");
-		studentList.add("ENES;AYAR");
+		studentList.add("AHMET GÜVEN");
+		studentList.add("ALİ GAZEL");
+	    	studentList.add("ALİ DOĞANGÜN");
+	    	studentList.add("ALİ AKYÜREK");
+	    	studentList.add("ALPER YELİMLİEŞ");
+		studentList.add("ARYA YİĞİT");
+		studentList.add("ATA GÜRSOY");
+		studentList.add("AYBERK AKÇAY");
+		studentList.add("AYKUT IŞIK");
+		studentList.add("BAHA ORHAN");
+		studentList.add("BAHAR ÖZTÜRK");
+		studentList.add("BETÜL DİNÇER");
+		studentList.add("CAN GUDEN");
+		studentList.add("CANKUT ŞOK");
+		studentList.add("DENİZ SAĞMANLI");
+		studentList.add("DİLARA KARADUMAN");
+		studentList.add("DOĞUKAN YAPRAK");
+		studentList.add("EGE ŞEHİRLİOĞLU");
+		studentList.add("EGE KILIÇ");
+		studentList.add("ENEL COMBA");
+		studentList.add("ENES ÇEVİK");
+		studentList.add("ENES AYAR");
 	}
 
 }
