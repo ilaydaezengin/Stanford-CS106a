@@ -1,0 +1,5 @@
+Your new year shopping spending details are as such:
+Ornament spending=0.0
+Tree spending=300.0
+Present spending=0.0
+Total price=300.0
